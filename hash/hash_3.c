@@ -1,51 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int a[1000000005][2];
+int cmp(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
 
 int longestConsecutive(int* nums, int numsSize) {
-    for(int i=0;i<numsSize;i++)
-    {
-        if(nums[i]<0)
-        {
-            a[-nums[i]][0]=1;
-        }
-        else
-        {
-            a[nums[i]][1]=1;
+    qsort(nums, numsSize, sizeof(int), cmp);
+    if(numsSize == 0) return 0;
+    int max = 1;
+    int current_length = 1;
+    for(int i = 1; i < numsSize; i++) {
+        if(nums[i] == nums[i - 1]) {
+            continue; // Skip duplicates
+        } else if(nums[i] == nums[i - 1] + 1) {
+            current_length++;
+        } else {
+            if(current_length > max) {
+                max = current_length;
+            }
+            current_length = 1;
         }
     }
-    int max=0;
-    int ans=0;
-    for(int i=100000000;i>=0;i--)
-    {
-        if(a[i][0]==1)
-        {
-            ans++;
-        }
-        else
-        {
-            if(ans>max)
-            {
-                max=ans;
-            }
-            ans=0;
-        }
-    }
-    for(int i=1;i<=100000000;i++)
-    {
-        if(a[i][1]==1)
-        {
-            ans++;
-        }
-        else
-        {
-            if(ans>max)
-            {
-                max=ans;
-            }
-            ans=0;
-        }
+    if(current_length > max) {
+        max = current_length;
     }
     return max;
 }
